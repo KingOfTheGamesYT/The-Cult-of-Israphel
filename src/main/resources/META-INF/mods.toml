@@ -1,0 +1,42 @@
+modLoader="javafml"
+
+loaderVersion="[36,)"
+
+license="All rights reserved"
+
+[[mods]]
+itemIcon="minecraft:spawner"
+
+configBackground="minecraft:textures/block/stone.png"
+
+modId="cult_of_israphel"
+
+version="1.0.0"
+
+displayName="Cult of  Israphel"
+
+displayURL="https://curseforge.com/minecraft/mc-mods/the-cult-of-israphel"
+
+logoFile="logo.png"
+
+credits="Brass Mcrafty for assets"
+
+authors=["RedRoseWarrior1 aka DevMaster1015"]
+
+description='''Israphel and his army return with new powers and expanded presence'''
+
+# Base Forge
+[[dependencies.cult_of_israphel]]
+    modId="forge"
+    mandatory=true
+    versionRange="[47,)"
+    ordering="NONE"
+    side="BOTH"
+
+# Base Minecraft
+[[dependencies.cult_of_israphel]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20.1,1.21]"
+    ordering="NONE"
+    side="BOTH"
