@@ -1,7 +1,7 @@
 # The Cult of Israphel
 Just a mod that randomnizes all vanilla dungeon spawners
 
-Gives varity to the normal dungeons instead of just being Spiders, Zombies and Skeletons.
+Israphel and his army return with new powers and expanded presence
 
 The license is ARR
 
