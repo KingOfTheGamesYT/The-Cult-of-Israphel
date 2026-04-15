@@ -34,14 +34,12 @@ public class RegistryHandler {
                             .sized(0.6F, 1.95F)
                             .build("israphel"));
 
-    public static final RegistryObject<Item> ISRAPHEL_SPAWN_EGG =
-            ITEMS.register("israphel_spawn_egg",
-                    () -> new ForgeSpawnEggItem(
-                            ISRAPHEL,
-                            0x2B2B2B,
-                            0x8B0000,
-                            new Item.Properties()
-                    ));
+
+                           // 0x2B2B2B, 0x8B0000,
+
+
+    public static final RegistryObject<Item> ISRAPHEL_SPAWN_EGG = ITEMS.register("israphel_spawn_egg",() -> new ForgeSpawnEggItem(RegistryHandler.ISRAPHEL, 0x800002, 0xff0f45, new Item.Properties()));
+
 
     @SubscribeEvent
     public static void registerAttributes(EntityAttributeCreationEvent event) {

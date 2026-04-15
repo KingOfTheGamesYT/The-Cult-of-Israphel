@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "cult_of_israphel:item/temp_egg"
+  }
+}

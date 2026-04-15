@@ -2,10 +2,12 @@ package com.devmaster.cult_of_israphel.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -22,12 +24,18 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+
+import javax.annotation.Nullable;
 
 public class Israphel extends Monster implements RangedAttackMob {
 
     private static final double MELEE_RANGE = 6.0D;
+    private ItemStack sword;
+    private ItemStack bow;
 
     public Israphel(EntityType<? extends Monster> type, Level level) {
         super(type, level);
@@ -56,15 +64,40 @@ public class Israphel extends Monster implements RangedAttackMob {
             double distance = this.distanceTo(target);
 
             if (distance <= MELEE_RANGE) {
-                this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.GOLDEN_SWORD));
+                if (this.getMainHandItem() != this.sword) {
+                    this.setItemSlot(EquipmentSlot.MAINHAND, this.sword);
+                }
             } else {
-                this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
+                if (this.getMainHandItem() != this.bow) {
+                    this.setItemSlot(EquipmentSlot.MAINHAND, this.bow);
+                }
             }
 
-            if (this.random.nextInt(20) == 0) {
+            if (this.random.nextInt(40) == 0) {
                 teleportTowards(target);
             }
         }
+    }
+
+    @Override
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag tag) {
+
+        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData, tag);
+
+        this.sword = new ItemStack(Items.GOLDEN_SWORD);
+        this.bow = new ItemStack(Items.BOW);
+
+        if (this.random.nextFloat() < 0.35F) {
+            this.sword.enchant(Enchantments.KNOCKBACK, 1);
+        }
+
+        if (this.random.nextFloat() < 0.35F) {
+            this.bow.enchant(Enchantments.POWER_ARROWS, 1);
+        }
+
+        this.setItemSlot(EquipmentSlot.MAINHAND, this.bow);
+
+        return spawnData;
     }
 
     private void teleportTowards(LivingEntity target) {
