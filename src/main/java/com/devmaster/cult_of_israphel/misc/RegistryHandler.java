@@ -7,6 +7,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
 
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -38,7 +39,8 @@ public class RegistryHandler {
                            // 0x2B2B2B, 0x8B0000,
 
 
-    public static final RegistryObject<Item> ISRAPHEL_SPAWN_EGG = ITEMS.register("israphel_spawn_egg",() -> new ForgeSpawnEggItem(RegistryHandler.ISRAPHEL, 0x800002, 0xff0f45, new Item.Properties()));
+    //public static final RegistryObject<Item> ISRAPHEL_SPAWN_EGG = ITEMS.register("israphel_spawn_egg",() -> new ForgeSpawnEggItem(RegistryHandler.ISRAPHEL, 0x800002, 0xff0f45, new Item.Properties()));
+    public static final RegistryObject<SpawnEggItem> ISRAPHEL_SPAWN_EGG = ITEMS.register("israphel_spawn_egg", () -> new ForgeSpawnEggItem(RegistryHandler.ISRAPHEL, 0xF9F9F9, 0xFFD700, new Item.Properties()));
 
 
     @SubscribeEvent
