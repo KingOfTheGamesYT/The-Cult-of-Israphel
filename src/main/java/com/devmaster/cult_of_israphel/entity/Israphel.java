@@ -1,12 +1,10 @@
 package com.devmaster.cult_of_israphel.entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -28,31 +26,38 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
 
 import javax.annotation.Nullable;
 
 public class Israphel extends Monster implements RangedAttackMob {
 
     private static final double MELEE_RANGE = 6.0D;
-    private ItemStack sword;
-    private ItemStack bow;
+
+    private ItemStack sword = ItemStack.EMPTY;
+    private ItemStack bow = ItemStack.EMPTY;
+
+    private int teleportCooldown = 0;
 
     public Israphel(EntityType<? extends Monster> type, Level level) {
         super(type, level);
         this.setCanPickUpLoot(false);
+        this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
     }
 
     @Override
     protected void registerGoals() {
+
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new RangedBowAttackGoal<>(this, 1.0D, 20, 15.0F));
-        this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.2D, true));
-        this.goalSelector.addGoal(4, new WaterAvoidingRandomStrollGoal(this, 1.0D));
-        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(2, new WeaponSwapGoal(this));
+        this.goalSelector.addGoal(3, new RangedBowAttackGoal<>(this, 1.0D, 20, 15.0F));
+        this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.2D, true));
+        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Pillager.class, true));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
 
     @Override
@@ -60,29 +65,23 @@ public class Israphel extends Monster implements RangedAttackMob {
         super.tick();
 
         LivingEntity target = this.getTarget();
-        if (target != null) {
-            double distance = this.distanceTo(target);
 
-            if (distance <= MELEE_RANGE) {
-                if (this.getMainHandItem() != this.sword) {
-                    this.setItemSlot(EquipmentSlot.MAINHAND, this.sword);
-                }
-            } else {
-                if (this.getMainHandItem() != this.bow) {
-                    this.setItemSlot(EquipmentSlot.MAINHAND, this.bow);
-                }
-            }
+        if (teleportCooldown > 0) {
+            teleportCooldown--;
+        }
 
-            if (this.random.nextInt(40) == 0) {
+        if (target != null && teleportCooldown == 0) {
+            if (this.random.nextInt(60) == 0) {
                 teleportTowards(target);
+                teleportCooldown = 100;
             }
         }
     }
 
-    @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag tag) {
+    // Persistent
+    private void initWeapons() {
 
-        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData, tag);
+        if (!this.sword.isEmpty() || !this.bow.isEmpty()) return;
 
         this.sword = new ItemStack(Items.GOLDEN_SWORD);
         this.bow = new ItemStack(Items.BOW);
@@ -94,59 +93,89 @@ public class Israphel extends Monster implements RangedAttackMob {
         if (this.random.nextFloat() < 0.35F) {
             this.bow.enchant(Enchantments.POWER_ARROWS, 1);
         }
-
-        this.setItemSlot(EquipmentSlot.MAINHAND, this.bow);
-
-        return spawnData;
     }
 
+    private ItemStack getDesiredWeapon() {
+        LivingEntity target = this.getTarget();
+        if (target == null) return this.bow;
+
+        double dist = this.distanceTo(target);
+        return (dist <= MELEE_RANGE) ? this.sword : this.bow;
+    }
+
+    //(enderman like)
     private void teleportTowards(LivingEntity target) {
-        RandomSource rand = this.random;
-        double x = target.getX() + (rand.nextDouble() - 0.5D) * 8.0D;
-        double y = target.getY();
-        double z = target.getZ() + (rand.nextDouble() - 0.5D) * 8.0D;
-        attemptTeleport(x, y, z);
-    }
 
-    protected boolean attemptTeleport(double x, double y, double z) {
-        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
+        double x = target.getX() + (this.random.nextDouble() - 0.5D) * 6.0D;
+        double y = target.getY();
+        double z = target.getZ() + (this.random.nextDouble() - 0.5D) * 6.0D;
+
+        BlockPos pos = BlockPos.containing(x, y, z);
 
         while (pos.getY() > this.level().getMinBuildHeight()
                 && !this.level().getBlockState(pos).blocksMotion()) {
-            pos.move(Direction.DOWN);
+            pos = pos.below();
         }
 
         BlockState state = this.level().getBlockState(pos);
-        boolean success = state.blocksMotion()
-                && !this.level().getBlockState(pos.above()).blocksMotion();
 
-        if (success) {
+        if (state.blocksMotion() && !this.level().getBlockState(pos.above()).blocksMotion()) {
             this.teleportTo(x, pos.getY() + 1, z);
             this.level().playSound(null, this.blockPosition(),
                     SoundEvents.ENDERMAN_TELEPORT,
                     this.getSoundSource(), 1.0F, 1.0F);
         }
-        return success;
     }
 
     @Override
     public void performRangedAttack(LivingEntity target, float velocity) {
+
         ItemStack bow = this.getMainHandItem();
         if (!(bow.getItem() instanceof BowItem)) return;
 
         AbstractArrow arrow = ProjectileUtil.getMobArrow(this, bow, velocity);
+
         double dx = target.getX() - this.getX();
         double dy = target.getY(0.333D) - arrow.getY();
         double dz = target.getZ() - this.getZ();
-        arrow.shoot(dx, dy, dz, 1.6F, 14 - this.level().getDifficulty().getId() * 4);
+
+        arrow.shoot(dx, dy, dz, 1.6F,
+                14 - this.level().getDifficulty().getId() * 4);
+
         this.level().addFreshEntity(arrow);
+    }
+
+    private static class WeaponSwapGoal extends Goal {
+
+        private final Israphel mob;
+
+        public WeaponSwapGoal(Israphel mob) {
+            this.mob = mob;
+        }
+
+        @Override
+        public boolean canUse() {
+            return mob.getTarget() != null;
+        }
+
+        @Override
+        public void tick() {
+
+            mob.initWeapons();
+
+            ItemStack desired = mob.getDesiredWeapon();
+            ItemStack current = mob.getMainHandItem();
+
+            if (current.getItem() != desired.getItem()) {
+                mob.setItemSlot(EquipmentSlot.MAINHAND, desired);
+            }
+        }
     }
 
     @Override
     public boolean isInvulnerableTo(DamageSource source) {
         return source.is(DamageTypeTags.IS_PROJECTILE);
     }
-
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
@@ -157,6 +186,16 @@ public class Israphel extends Monster implements RangedAttackMob {
                 .add(Attributes.ATTACK_DAMAGE, 6.0D);
     }
 
+    @Override
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag tag) {
+
+        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData, tag);
+
+        initWeapons();
+        this.setItemSlot(EquipmentSlot.MAINHAND, this.bow);
+
+        return spawnData;
+    }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
