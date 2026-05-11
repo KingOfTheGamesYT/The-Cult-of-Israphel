@@ -1,5 +1,6 @@
 package com.devmaster.cult_of_israphel.misc;
 
+import com.devmaster.cult_of_israphel.entity.renders.CultistRenderer;
 import com.devmaster.cult_of_israphel.entity.renders.IsraphelRenderer;
 
 import net.minecraft.client.model.HumanoidModel;
@@ -16,21 +17,13 @@ public class ClientModEvents {
 
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(
-                RegistryHandler.ISRAPHEL.get(),
-                IsraphelRenderer::new
-        );
+        event.registerEntityRenderer(RegistryHandler.ISRAPHEL.get(), IsraphelRenderer::new);
+        event.registerEntityRenderer(RegistryHandler.CULTIST.get(), CultistRenderer::new);
     }
 
     @SubscribeEvent
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(
-                IsraphelRenderer.ISRAPHEL_LAYER,
-                () -> LayerDefinition.create(
-                        HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F),
-                        64,
-                        64
-                )
-        );
+        event.registerLayerDefinition(IsraphelRenderer.ISRAPHEL_LAYER, () -> LayerDefinition.create(HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F), 64, 64));
+        event.registerLayerDefinition(CultistRenderer.CULTIST_LAYER, () -> LayerDefinition.create(HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F), 64, 64));
     }
 }

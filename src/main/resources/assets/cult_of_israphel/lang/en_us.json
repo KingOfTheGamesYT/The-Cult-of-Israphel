@@ -1,4 +1,7 @@
 {
+  "item.cult_of_israphel.cultist_spawn_egg": "Spawn Cultist",
   "item.cult_of_israphel.israphel_spawn_egg": "Spawn Israphel",
-  "entity.cult_of_israphel.israphel": "Israphel"
+
+  "entity.cult_of_israphel.israphel": "Israphel",
+  "entity.cult_of_israphel.cultist": "Cultist"
 }
