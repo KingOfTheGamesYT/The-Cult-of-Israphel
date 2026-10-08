@@ -32,7 +32,7 @@ public class RegistryHandler {
     public static final RegistryObject<EntityType<Israphel>> ISRAPHEL =
             ENTITIES.register("israphel",
                     () -> EntityType.Builder
-                            .of(Israphel::new, MobCategory.MONSTER)
+                            .of(Israphel::new, MobCategory.CREATURE)
                             .sized(0.6F, 1.95F)
                             .build("israphel"));
 
@@ -50,6 +50,5 @@ public class RegistryHandler {
     public static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(RegistryHandler.ISRAPHEL.get(), Israphel.createAttributes().build());
         event.put(RegistryHandler.CULTIST.get(), Cultist.createAttributes().build());
-
     }
 }

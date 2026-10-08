@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
@@ -33,14 +34,14 @@ import javax.annotation.Nullable;
 public class Israphel extends Monster implements RangedAttackMob {
 
     private static final double MELEE_RANGE = 6.0D;
+    private int teleportCooldown = 0;
 
     private ItemStack sword = ItemStack.EMPTY;
     private ItemStack bow = ItemStack.EMPTY;
 
-    private int teleportCooldown = 0;
-
     public Israphel(EntityType<? extends Monster> type, Level level) {
         super(type, level);
+
         this.setCanPickUpLoot(false);
         this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
     }
@@ -78,31 +79,6 @@ public class Israphel extends Monster implements RangedAttackMob {
         }
     }
 
-    // Persistent
-    private void initWeapons() {
-
-        if (!this.sword.isEmpty() || !this.bow.isEmpty()) return;
-
-        this.sword = new ItemStack(Items.GOLDEN_SWORD);
-        this.bow = new ItemStack(Items.BOW);
-
-        if (this.random.nextFloat() < 0.35F) {
-            this.sword.enchant(Enchantments.KNOCKBACK, 1);
-        }
-
-        if (this.random.nextFloat() < 0.35F) {
-            this.bow.enchant(Enchantments.POWER_ARROWS, 1);
-        }
-    }
-
-    private ItemStack getDesiredWeapon() {
-        LivingEntity target = this.getTarget();
-        if (target == null) return this.bow;
-
-        double dist = this.distanceTo(target);
-        return (dist <= MELEE_RANGE) ? this.sword : this.bow;
-    }
-
     //(enderman like)
     private void teleportTowards(LivingEntity target) {
 
@@ -112,8 +88,7 @@ public class Israphel extends Monster implements RangedAttackMob {
 
         BlockPos pos = BlockPos.containing(x, y, z);
 
-        while (pos.getY() > this.level().getMinBuildHeight()
-                && !this.level().getBlockState(pos).blocksMotion()) {
+        while (pos.getY() > this.level().getMinBuildHeight() && !this.level().getBlockState(pos).blocksMotion()) {
             pos = pos.below();
         }
 
@@ -121,17 +96,56 @@ public class Israphel extends Monster implements RangedAttackMob {
 
         if (state.blocksMotion() && !this.level().getBlockState(pos.above()).blocksMotion()) {
             this.teleportTo(x, pos.getY() + 1, z);
-            this.level().playSound(null, this.blockPosition(),
-                    SoundEvents.ENDERMAN_TELEPORT,
-                    this.getSoundSource(), 1.0F, 1.0F);
+            this.level().playSound(null, this.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, this.getSoundSource(), 1.0F, 1.0F);
         }
+    }
+
+    private void initWeapons() {
+
+        if (!this.sword.isEmpty() && !this.bow.isEmpty()) {
+            return;
+        }
+
+        if (this.sword.isEmpty()) {
+
+            this.sword = new ItemStack(Items.GOLDEN_SWORD);
+
+            if (this.random.nextFloat() < 0.35F) {
+                this.sword.enchant(Enchantments.KNOCKBACK, 1);
+            }
+        }
+
+        if (this.bow.isEmpty()) {
+
+            this.bow = new ItemStack(Items.BOW);
+
+            if (this.random.nextFloat() < 0.35F) {
+                this.bow.enchant(Enchantments.POWER_ARROWS, 1);
+            }
+        }
+    }
+
+    private ItemStack getDesiredWeapon() {
+
+        LivingEntity target = this.getTarget();
+
+        if (target == null) {
+            return this.bow;
+        }
+
+        double dist = this.distanceTo(target);
+
+        return dist <= MELEE_RANGE ? this.sword : this.bow;
     }
 
     @Override
     public void performRangedAttack(LivingEntity target, float velocity) {
 
         ItemStack bow = this.getMainHandItem();
-        if (!(bow.getItem() instanceof BowItem)) return;
+
+        if (!(bow.getItem() instanceof BowItem)) {
+            return;
+        }
 
         AbstractArrow arrow = ProjectileUtil.getMobArrow(this, bow, velocity);
 
@@ -139,8 +153,7 @@ public class Israphel extends Monster implements RangedAttackMob {
         double dy = target.getY(0.333D) - arrow.getY();
         double dz = target.getZ() - this.getZ();
 
-        arrow.shoot(dx, dy, dz, 1.6F,
-                14 - this.level().getDifficulty().getId() * 4);
+        arrow.shoot(dx, dy, dz, 1.6F, 14 - this.level().getDifficulty().getId() * 4);
 
         this.level().addFreshEntity(arrow);
     }
@@ -155,19 +168,19 @@ public class Israphel extends Monster implements RangedAttackMob {
 
         @Override
         public boolean canUse() {
-            return mob.getTarget() != null;
+            return this.mob.getTarget() != null;
         }
 
         @Override
         public void tick() {
 
-            mob.initWeapons();
+            this.mob.initWeapons();
 
-            ItemStack desired = mob.getDesiredWeapon();
-            ItemStack current = mob.getMainHandItem();
+            ItemStack desired = this.mob.getDesiredWeapon();
+            ItemStack current = this.mob.getMainHandItem();
 
             if (current.getItem() != desired.getItem()) {
-                mob.setItemSlot(EquipmentSlot.MAINHAND, desired);
+                this.mob.setItemSlot(EquipmentSlot.MAINHAND, desired);
             }
         }
     }
@@ -178,6 +191,7 @@ public class Israphel extends Monster implements RangedAttackMob {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
+
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 100.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D)
@@ -191,19 +205,53 @@ public class Israphel extends Monster implements RangedAttackMob {
 
         spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData, tag);
 
-        initWeapons();
+        this.initWeapons();
         this.setItemSlot(EquipmentSlot.MAINHAND, this.bow);
 
         return spawnData;
     }
 
     @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+
+        super.addAdditionalSaveData(tag);
+
+        if (!this.sword.isEmpty()) {
+            tag.put("IsraphelSword", this.sword.save(new CompoundTag()));
+        }
+
+        if (!this.bow.isEmpty()) {
+            tag.put("IsraphelBow", this.bow.save(new CompoundTag()));
+        }
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+
+        super.readAdditionalSaveData(tag);
+
+        if (tag.contains("IsraphelSword")) {
+            this.sword = ItemStack.of(tag.getCompound("IsraphelSword"));
+        }
+
+        if (tag.contains("IsraphelBow")) {
+            this.bow = ItemStack.of(tag.getCompound("IsraphelBow"));
+        }
+    }
+
+    @Override
+    public boolean checkSpawnRules(LevelAccessor level, MobSpawnType spawnType)
+    {
+        return true;
+    }
+
+    @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return SoundEvents.PLAYER_HURT;
+        return SoundEvents.PILLAGER_HURT;
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.PLAYER_DEATH;
+        return SoundEvents.PILLAGER_DEATH;
     }
 }

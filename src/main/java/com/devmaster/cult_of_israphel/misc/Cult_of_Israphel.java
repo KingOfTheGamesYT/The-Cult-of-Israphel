@@ -2,8 +2,11 @@ package com.devmaster.cult_of_israphel.misc;
 
 import com.devmaster.cult_of_israphel.config.Config;
 
+import com.devmaster.cult_of_israphel.entity.spawns.IsraphelPatrolSpawner;
+
 import net.minecraft.world.item.CreativeModeTabs;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -13,12 +16,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 @Mod("cult_of_israphel")
 public class Cult_of_Israphel {
-    public static final Logger LOGGER = LogManager.getLogger("Cult of Israphel");
     public static final String MOD_ID = "cult_of_israphel";
 
     public Cult_of_Israphel() {
@@ -29,6 +28,8 @@ public class Cult_of_Israphel {
         RegistryHandler.register(modEventBus);
         modEventBus.addListener(this::setup);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG, "cult_of_israphel-config.toml");
+        MinecraftForge.EVENT_BUS.register(new IsraphelPatrolSpawner());
+
     }
 
     private void setup(FMLCommonSetupEvent event) {
@@ -41,7 +42,6 @@ public class Cult_of_Israphel {
         if(event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
             event.accept(RegistryHandler.ISRAPHEL_SPAWN_EGG);
             event.accept(RegistryHandler.CULTIST_SPAWN_EGG);
-
         }
     }
 }

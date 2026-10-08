@@ -12,15 +12,10 @@ import net.minecraft.resources.ResourceLocation;
 public class CultistRenderer extends HumanoidMobRenderer<Cultist, HumanoidModel<Cultist>> {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Cult_of_Israphel.MOD_ID, "textures/entity/cultist.png");
-
-    public static final ModelLayerLocation CULTIST_LAYER = new ModelLayerLocation(
-                    new ResourceLocation(Cult_of_Israphel.MOD_ID, "cultist"),
-                    "main"
-            );
+    public static final ModelLayerLocation CULTIST_LAYER = new ModelLayerLocation(new ResourceLocation(Cult_of_Israphel.MOD_ID, "cultist"), "main");
 
     public CultistRenderer(EntityRendererProvider.Context context) {
-        super(context, new HumanoidModel<>(context.bakeLayer(CULTIST_LAYER)), 0.5F
-        );
+        super(context, new HumanoidModel<>(context.bakeLayer(CULTIST_LAYER)), 0.5F);
     }
 
     @Override

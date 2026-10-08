@@ -12,11 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 public class IsraphelRenderer extends HumanoidMobRenderer<Israphel, HumanoidModel<Israphel>> {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Cult_of_Israphel.MOD_ID, "textures/entity/israphel.png");
-
-    public static final ModelLayerLocation ISRAPHEL_LAYER = new ModelLayerLocation(
-                    new ResourceLocation(Cult_of_Israphel.MOD_ID, "israphel"),
-                    "main"
-            );
+    public static final ModelLayerLocation ISRAPHEL_LAYER = new ModelLayerLocation(new ResourceLocation(Cult_of_Israphel.MOD_ID, "israphel"), "main");
 
     public IsraphelRenderer(EntityRendererProvider.Context context) {
         super(context, new HumanoidModel<>(context.bakeLayer(ISRAPHEL_LAYER)), 0.5F
@@ -28,4 +24,3 @@ public class IsraphelRenderer extends HumanoidMobRenderer<Israphel, HumanoidMode
         return TEXTURE;
     }
 }
-
