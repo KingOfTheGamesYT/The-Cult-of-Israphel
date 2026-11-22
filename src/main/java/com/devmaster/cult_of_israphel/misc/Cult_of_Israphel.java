@@ -42,6 +42,8 @@ public class Cult_of_Israphel {
         if(event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
             event.accept(RegistryHandler.ISRAPHEL_SPAWN_EGG);
             event.accept(RegistryHandler.CULTIST_SPAWN_EGG);
+            event.accept(RegistryHandler.ADEPT_SPAWN_EGG);
+            event.accept(RegistryHandler.ARCHBISHOP_SPAWN_EGG);
         }
     }
 }
