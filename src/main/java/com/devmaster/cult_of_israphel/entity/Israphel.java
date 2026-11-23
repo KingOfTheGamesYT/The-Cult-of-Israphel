@@ -79,7 +79,7 @@ public class Israphel extends Monster implements RangedAttackMob {
         }
     }
 
-    //(enderman like)
+    //Enderman like
     private void teleportTowards(LivingEntity target) {
 
         double x = target.getX() + (this.random.nextDouble() - 0.5D) * 6.0D;
@@ -187,7 +187,18 @@ public class Israphel extends Monster implements RangedAttackMob {
 
     @Override
     public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypeTags.IS_PROJECTILE);
+        if (source.is(DamageTypeTags.IS_PROJECTILE)) {
+            Entity attacker = source.getEntity();
+
+            if (source.getDirectEntity() instanceof AbstractArrow && attacker instanceof Player)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        return super.isInvulnerableTo(source);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -247,11 +258,11 @@ public class Israphel extends Monster implements RangedAttackMob {
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return SoundEvents.PILLAGER_HURT;
+        return SoundEvents.PLAYER_HURT;
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.PILLAGER_DEATH;
+        return SoundEvents.PLAYER_DEATH;
     }
 }
