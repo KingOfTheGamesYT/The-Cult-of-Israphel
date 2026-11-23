@@ -260,9 +260,4 @@ public class Israphel extends Monster implements RangedAttackMob {
     protected SoundEvent getHurtSound(DamageSource source) {
         return SoundEvents.PLAYER_HURT;
     }
-
-    @Override
-    protected SoundEvent getDeathSound() {
-        return SoundEvents.PLAYER_DEATH;
-    }
 }
