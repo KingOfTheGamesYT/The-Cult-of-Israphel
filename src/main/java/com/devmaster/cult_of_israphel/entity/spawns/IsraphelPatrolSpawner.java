@@ -84,11 +84,6 @@ public class IsraphelPatrolSpawner {
 
         israphel.moveTo(x + 0.5, spawnPos.getY(), z + 0.5, random.nextFloat() * 360.0F, 0.0F);
 
-
-        if (!israphel.checkSpawnRules(level, MobSpawnType.EVENT)) {
-            return;
-        }
-
         if (!israphel.checkSpawnObstruction(level)) {
             return;
         }

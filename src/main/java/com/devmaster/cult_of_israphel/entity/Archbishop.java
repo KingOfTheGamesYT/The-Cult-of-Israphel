@@ -108,7 +108,7 @@ public class Archbishop extends Monster {
         double dx = target.getX() - this.getX();
         double dy = target.getY(0.5D) - this.getEyeY();
         double dz = target.getZ() - this.getZ();
-        AdeptFireball fireball = new AdeptFireball(RegistryHandler.ARCHBISHOP_FIREBALL.get(), this.level(), this, dx, dy, dz);
+        SoulCastFireball fireball = new SoulCastFireball(RegistryHandler.ARCHBISHOP_FIREBALL.get(), this.level(), this, dx, dy, dz);
 
         this.level().addFreshEntity(fireball);
     }

@@ -99,7 +99,7 @@ public class Adept extends Monster {
         double dx = target.getX() - this.getX();
         double dy = target.getY(0.5D) - this.getEyeY();
         double dz = target.getZ() - this.getZ();
-        AdeptFireball fireball = new AdeptFireball(RegistryHandler.ADEPT_FIREBALL.get(), this.level(), this, dx, dy, dz);
+        SoulCastFireball fireball = new SoulCastFireball(RegistryHandler.ADEPT_FIREBALL.get(), this.level(), this, dx, dy, dz);
 
         this.level().addFreshEntity(fireball);
     }
@@ -303,12 +303,6 @@ public class Adept extends Monster {
                 adept.fangCooldown = 120 + adept.random.nextInt(81);
             }
         }
-    }
-
-    @Override
-    public boolean checkSpawnRules(LevelAccessor level, MobSpawnType spawnType)
-    {
-        return true;
     }
 
     @Override

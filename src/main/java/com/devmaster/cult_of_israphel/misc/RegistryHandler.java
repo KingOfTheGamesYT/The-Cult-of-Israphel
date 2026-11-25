@@ -58,17 +58,17 @@ public class RegistryHandler {
 
 
     //Projectiles
-    public static final RegistryObject<EntityType<AdeptFireball>> ADEPT_FIREBALL =
+    public static final RegistryObject<EntityType<SoulCastFireball>> ADEPT_FIREBALL =
             ENTITIES.register("adept_fireball",
-                    () -> EntityType.Builder.<AdeptFireball>of(AdeptFireball::new, MobCategory.MISC)
+                    () -> EntityType.Builder.<SoulCastFireball>of(SoulCastFireball::new, MobCategory.MISC)
                             .sized(0.3125F, 0.3125F)
                             .clientTrackingRange(4)
                             .updateInterval(10)
                             .build("adept_fireball"));
 
-    public static final RegistryObject<EntityType<AdeptFireball>> ARCHBISHOP_FIREBALL =
+    public static final RegistryObject<EntityType<SoulCastFireball>> ARCHBISHOP_FIREBALL =
             ENTITIES.register("archbishop_fireball",
-                    () -> EntityType.Builder.<AdeptFireball>of(AdeptFireball::new, MobCategory.MISC)
+                    () -> EntityType.Builder.<SoulCastFireball>of(SoulCastFireball::new, MobCategory.MISC)
                             .sized(0.3125F, 0.3125F)
                             .clientTrackingRange(4)
                             .updateInterval(10)

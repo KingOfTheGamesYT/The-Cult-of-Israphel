@@ -6,13 +6,13 @@ import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class AdeptFireball extends SmallFireball {
+public class SoulCastFireball extends SmallFireball {
 
-    public AdeptFireball(EntityType<AdeptFireball> entityType, Level level) {
+    public SoulCastFireball(EntityType<SoulCastFireball> entityType, Level level) {
         super(entityType, level);
     }
 
-    public AdeptFireball(EntityType<AdeptFireball> entityType, Level level, LivingEntity shooter, double dx, double dy, double dz)
+    public SoulCastFireball(EntityType<SoulCastFireball> entityType, Level level, LivingEntity shooter, double dx, double dy, double dz)
     {
         super(entityType, level);
 

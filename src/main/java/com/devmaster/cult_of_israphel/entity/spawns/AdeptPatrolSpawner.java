@@ -21,7 +21,7 @@ import java.util.UUID;
 public class AdeptPatrolSpawner {
 
     private static final int SPAWN_INTERVAL = 1200;
-    private static final float SPAWN_CHANCE = 0.20F;
+    private static final float SPAWN_CHANCE = 2.00F;
     private static final int MIN_DISTANCE = 32;
     private static final int MAX_DISTANCE = 48;
     private static final int PATROL_CHECK_RADIUS = 128;
@@ -63,7 +63,6 @@ public class AdeptPatrolSpawner {
     private static void attemptSpawn(ServerLevel level) {
         List<ServerPlayer> players = level.players().stream()
                 .filter(player -> !player.isSpectator())
-                .filter(player -> !player.isCreative())
                 .toList();
 
         if (players.isEmpty()) {
@@ -100,7 +99,7 @@ public class AdeptPatrolSpawner {
         adept.getPersistentData().putUUID("AdeptPatrolID", patrolId);
         adept.getPersistentData().putBoolean("AdeptPatrolLeader", true);
 
-        if (!adept.checkSpawnRules(level, MobSpawnType.EVENT)) {
+        if (!adept.checkSpawnObstruction(level)) {
             return;
         }
 
@@ -136,10 +135,6 @@ public class AdeptPatrolSpawner {
         cultist.moveTo(x, spawnPos.getY(), z, random.nextFloat() * 360.0F, 0.0F);
         cultist.getPersistentData().putUUID("AdeptPatrolID", patrolId);
         cultist.getPersistentData().putUUID("AdeptPatrolLeaderUUID", adept.getUUID());
-
-        if (!cultist.checkSpawnRules(level, MobSpawnType.EVENT)) {
-            return;
-        }
 
         if (!cultist.checkSpawnObstruction(level)) {
             return;

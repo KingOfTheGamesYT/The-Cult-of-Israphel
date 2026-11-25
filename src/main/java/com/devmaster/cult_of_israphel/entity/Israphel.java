@@ -251,12 +251,6 @@ public class Israphel extends Monster implements RangedAttackMob {
     }
 
     @Override
-    public boolean checkSpawnRules(LevelAccessor level, MobSpawnType spawnType)
-    {
-        return true;
-    }
-
-    @Override
     protected SoundEvent getHurtSound(DamageSource source) {
         return SoundEvents.PLAYER_HURT;
     }

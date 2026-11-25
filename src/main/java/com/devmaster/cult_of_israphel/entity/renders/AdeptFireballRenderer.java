@@ -1,6 +1,6 @@
 package com.devmaster.cult_of_israphel.entity.renders;
 
-import com.devmaster.cult_of_israphel.entity.AdeptFireball;
+import com.devmaster.cult_of_israphel.entity.SoulCastFireball;
 import com.devmaster.cult_of_israphel.misc.Cult_of_Israphel;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
-public class AdeptFireballRenderer extends EntityRenderer<AdeptFireball> {
+public class AdeptFireballRenderer extends EntityRenderer<SoulCastFireball> {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Cult_of_Israphel.MOD_ID, "textures/entity/adept_fireball.png");
     private static final int FRAME_COUNT = 8;
@@ -25,7 +25,7 @@ public class AdeptFireballRenderer extends EntityRenderer<AdeptFireball> {
     }
 
     @Override
-    public void render(AdeptFireball entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public void render(SoulCastFireball entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
 
         int frame = (entity.tickCount / FRAME_TIME) % FRAME_COUNT;
         float minU = 0.0F;
@@ -59,7 +59,7 @@ public class AdeptFireballRenderer extends EntityRenderer<AdeptFireball> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(AdeptFireball entity) {
+    public ResourceLocation getTextureLocation(SoulCastFireball entity) {
         return TEXTURE;
     }
 }

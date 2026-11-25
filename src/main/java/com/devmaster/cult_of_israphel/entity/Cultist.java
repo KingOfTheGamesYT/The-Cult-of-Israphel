@@ -268,12 +268,6 @@ public class Cultist extends Monster implements RangedAttackMob {
     }
 
     @Override
-    public boolean checkSpawnRules(LevelAccessor level, MobSpawnType spawnType)
-    {
-        return true;
-    }
-
-    @Override
     protected SoundEvent getAmbientSound() {
         return SoundEvents.PILLAGER_AMBIENT;
     }
