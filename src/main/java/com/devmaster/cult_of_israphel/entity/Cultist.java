@@ -1,6 +1,7 @@
 package com.devmaster.cult_of_israphel.entity;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
@@ -22,10 +23,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 
 import javax.annotation.Nullable;
+import java.util.EnumSet;
+import java.util.UUID;
 
 public class Cultist extends Monster implements RangedAttackMob {
 
@@ -49,6 +53,7 @@ public class Cultist extends Monster implements RangedAttackMob {
         this.goalSelector.addGoal(3, new RangedBowAttackGoal<>(this, 1.0D, 20, 15.0F));
         this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.2D, true));
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(5, new AdeptPatrolFollowGoal(this, 1.15D, 8.0F, 4.0F));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
@@ -146,6 +151,73 @@ public class Cultist extends Monster implements RangedAttackMob {
         }
     }
 
+    private static class AdeptPatrolFollowGoal extends Goal {
+
+        private final Cultist mob;
+        private final double speedModifier;
+        private final float startDistance;
+        private final float stopDistance;
+        private Mob leader;
+
+        public AdeptPatrolFollowGoal(Cultist mob, double speedModifier, float startDistance, float stopDistance)
+        {
+            this.mob = mob;
+            this.speedModifier = speedModifier;
+            this.startDistance = startDistance;
+            this.stopDistance = stopDistance;
+            this.setFlags(EnumSet.of(Goal.Flag.MOVE));
+        }
+
+        @Override
+        public boolean canUse() {
+
+            if (!this.mob.getPersistentData().hasUUID("AdeptPatrolLeaderUUID")) {
+                return false;
+            }
+
+            UUID leaderUUID = this.mob.getPersistentData().getUUID("AdeptPatrolLeaderUUID");
+
+            if (!(this.mob.level() instanceof ServerLevel serverLevel)) {
+                return false;
+            }
+
+            Entity entity = serverLevel.getEntity(leaderUUID);
+
+            if (!(entity instanceof Mob mobLeader) || !mobLeader.isAlive()) {
+                return false;
+            }
+
+            this.leader = mobLeader;
+
+            return this.mob.distanceToSqr(this.leader) > this.startDistance * this.startDistance;
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+
+            return this.leader != null && this.leader.isAlive() && this.mob.distanceToSqr(this.leader) > this.stopDistance * this.stopDistance;
+        }
+
+        @Override
+        public void tick() {
+
+            if (this.leader == null) {
+                return;
+            }
+
+            if (this.mob.getNavigation().isDone()) {
+                this.mob.getNavigation().moveTo(this.leader, this.speedModifier);
+            }
+        }
+
+        @Override
+        public void stop() {
+
+            this.leader = null;
+            this.mob.getNavigation().stop();
+        }
+    }
+
     public static AttributeSupplier.Builder createAttributes() {
 
         return Mob.createMobAttributes()
@@ -193,6 +265,12 @@ public class Cultist extends Monster implements RangedAttackMob {
         if (tag.contains("CultistBow")) {
             this.bow = ItemStack.of(tag.getCompound("CultistBow"));
         }
+    }
+
+    @Override
+    public boolean checkSpawnRules(LevelAccessor level, MobSpawnType spawnType)
+    {
+        return true;
     }
 
     @Override

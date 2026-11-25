@@ -2,6 +2,7 @@ package com.devmaster.cult_of_israphel.misc;
 
 import com.devmaster.cult_of_israphel.config.Config;
 
+import com.devmaster.cult_of_israphel.entity.spawns.AdeptPatrolSpawner;
 import com.devmaster.cult_of_israphel.entity.spawns.IsraphelPatrolSpawner;
 
 import net.minecraft.world.item.CreativeModeTabs;
@@ -29,6 +30,7 @@ public class Cult_of_Israphel {
         modEventBus.addListener(this::setup);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG, "cult_of_israphel-config.toml");
         MinecraftForge.EVENT_BUS.register(new IsraphelPatrolSpawner());
+        MinecraftForge.EVENT_BUS.register(new AdeptPatrolSpawner());
     }
 
     private void setup(FMLCommonSetupEvent event) {

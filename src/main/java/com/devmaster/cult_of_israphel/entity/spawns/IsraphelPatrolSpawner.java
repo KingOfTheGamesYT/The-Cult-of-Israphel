@@ -66,12 +66,10 @@ public class IsraphelPatrolSpawner {
 
         RandomSource random = level.getRandom();
         ServerPlayer player = players.get(random.nextInt(players.size()));
-
         double angle = random.nextDouble() * Math.PI * 2.0;
         int distance = 32 + random.nextInt(17);
         int x = player.getBlockX() + (int) Math.round(Math.cos(angle) * distance);
         int z = player.getBlockZ() + (int) Math.round(Math.sin(angle) * distance);
-
         BlockPos spawnPos = BlockPos.containing(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z), z);
 
         if (!level.hasChunkAt(spawnPos)) {
