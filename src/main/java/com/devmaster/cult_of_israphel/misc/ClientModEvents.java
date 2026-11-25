@@ -1,9 +1,6 @@
 package com.devmaster.cult_of_israphel.misc;
 
-import com.devmaster.cult_of_israphel.entity.renders.AdeptFireballRenderer;
-import com.devmaster.cult_of_israphel.entity.renders.AdeptRenderer;
-import com.devmaster.cult_of_israphel.entity.renders.CultistRenderer;
-import com.devmaster.cult_of_israphel.entity.renders.IsraphelRenderer;
+import com.devmaster.cult_of_israphel.entity.renders.*;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -22,7 +19,9 @@ public class ClientModEvents {
         event.registerEntityRenderer(RegistryHandler.ISRAPHEL.get(), IsraphelRenderer::new);
         event.registerEntityRenderer(RegistryHandler.CULTIST.get(), CultistRenderer::new);
         event.registerEntityRenderer(RegistryHandler.ADEPT.get(), AdeptRenderer::new);
+        event.registerEntityRenderer(RegistryHandler.ARCHBISHOP.get(), ArchbishopRenderer::new);
         event.registerEntityRenderer(RegistryHandler.ADEPT_FIREBALL.get(), AdeptFireballRenderer::new);
+        event.registerEntityRenderer(RegistryHandler.ARCHBISHOP_FIREBALL.get(), ArchbishopFireballRenderer::new);
     }
 
     @SubscribeEvent
@@ -30,6 +29,6 @@ public class ClientModEvents {
         event.registerLayerDefinition(IsraphelRenderer.ISRAPHEL_LAYER, () -> LayerDefinition.create(HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F), 64, 64));
         event.registerLayerDefinition(CultistRenderer.CULTIST_LAYER, () -> LayerDefinition.create(HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F), 64, 64));
         event.registerLayerDefinition(AdeptRenderer.ADEPT_LAYER, () -> LayerDefinition.create(HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F), 64, 64));
-
+        event.registerLayerDefinition(ArchbishopRenderer.ARCHBISHOP_LAYER, () -> LayerDefinition.create(HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F), 64, 64));
     }
 }

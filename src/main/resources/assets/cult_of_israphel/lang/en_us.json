@@ -2,11 +2,15 @@
   "item.cult_of_israphel.cultist_spawn_egg": "Spawn Cultist",
   "item.cult_of_israphel.israphel_spawn_egg": "Spawn Israphel",
   "item.cult_of_israphel.adept_spawn_egg": "Spawn Adept",
+  "item.cult_of_israphel.archbishop_spawn_egg": "Spawn Archbishop",
 
   "entity.cult_of_israphel.israphel": "Israphel",
   "entity.cult_of_israphel.cultist": "Cultist",
   "entity.cult_of_israphel.adept": "Adept",
+  "entity.cult_of_israphel.archbishop": "Archbishop",
 
-  "entity.cult_of_israphel.adept_fireball": "Adept Fireball"
+  "entity.cult_of_israphel.adept_fireball": "Adept Fireball",
+  "entity.cult_of_israphel.archbishop_fireball": "Archbishop Fireball"
+
 
 }

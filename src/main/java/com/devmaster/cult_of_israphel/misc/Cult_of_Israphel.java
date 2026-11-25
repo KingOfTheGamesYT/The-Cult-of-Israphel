@@ -29,7 +29,6 @@ public class Cult_of_Israphel {
         modEventBus.addListener(this::setup);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG, "cult_of_israphel-config.toml");
         MinecraftForge.EVENT_BUS.register(new IsraphelPatrolSpawner());
-
     }
 
     private void setup(FMLCommonSetupEvent event) {
