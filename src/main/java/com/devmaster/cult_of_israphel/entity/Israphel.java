@@ -35,7 +35,8 @@ public class Israphel extends Monster implements RangedAttackMob {
 
     private static final double MELEE_RANGE = 6.0D;
     private int teleportCooldown = 0;
-
+    private static final int DESPAWN_TIME = 12000;
+    private int despawnTimer;
     private ItemStack sword = ItemStack.EMPTY;
     private ItemStack bow = ItemStack.EMPTY;
 
@@ -76,6 +77,18 @@ public class Israphel extends Monster implements RangedAttackMob {
                 teleportTowards(target);
                 teleportCooldown = 100;
             }
+        }
+        if (this.isPersistenceRequired() || this.hasCustomName()) {
+            return;
+        }
+
+        if (this.level().getNearestPlayer(this, 32.0D) != null) {
+            this.despawnTimer = 0;
+            return;
+        }
+
+        if (++this.despawnTimer >= DESPAWN_TIME) {
+            this.discard();
         }
     }
 

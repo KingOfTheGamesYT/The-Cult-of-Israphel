@@ -1,4 +1,4 @@
-package com.devmaster.cult_of_israphel.entity.spawns;
+package com.devmaster.cult_of_israphel.worldgen.spawns;
 
 import com.devmaster.cult_of_israphel.entity.Adept;
 import com.devmaster.cult_of_israphel.entity.Cultist;
@@ -9,7 +9,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.TickEvent;
@@ -21,7 +20,7 @@ import java.util.UUID;
 public class AdeptPatrolSpawner {
 
     private static final int SPAWN_INTERVAL = 1200;
-    private static final float SPAWN_CHANCE = 2.00F;
+    private static final float SPAWN_CHANCE = 0.02F;
     private static final int MIN_DISTANCE = 32;
     private static final int MAX_DISTANCE = 48;
     private static final int PATROL_CHECK_RADIUS = 128;
@@ -62,6 +61,7 @@ public class AdeptPatrolSpawner {
 
     private static void attemptSpawn(ServerLevel level) {
         List<ServerPlayer> players = level.players().stream()
+                .filter(player -> !player.isCreative())
                 .filter(player -> !player.isSpectator())
                 .toList();
 

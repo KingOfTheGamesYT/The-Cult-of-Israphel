@@ -1,4 +1,4 @@
-package com.devmaster.cult_of_israphel.entity.spawns;
+package com.devmaster.cult_of_israphel.worldgen.spawns;
 
 import com.devmaster.cult_of_israphel.entity.Israphel;
 import com.devmaster.cult_of_israphel.misc.RegistryHandler;
@@ -8,7 +8,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

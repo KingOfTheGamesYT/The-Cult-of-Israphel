@@ -34,7 +34,8 @@ import java.util.UUID;
 public class Cultist extends Monster implements RangedAttackMob {
 
     private static final double MELEE_RANGE = 6.0D;
-
+    private static final int DESPAWN_TIME = 12000;
+    private int despawnTimer;
     private ItemStack sword = ItemStack.EMPTY;
     private ItemStack bow = ItemStack.EMPTY;
 
@@ -64,6 +65,18 @@ public class Cultist extends Monster implements RangedAttackMob {
     @Override
     public void tick() {
         super.tick();
+        if (this.isPersistenceRequired() || this.hasCustomName()) {
+            return;
+        }
+
+        if (this.level().getNearestPlayer(this, 32.0D) != null) {
+            this.despawnTimer = 0;
+            return;
+        }
+
+        if (++this.despawnTimer >= DESPAWN_TIME) {
+            this.discard();
+        }
     }
 
     private void initWeapons() {

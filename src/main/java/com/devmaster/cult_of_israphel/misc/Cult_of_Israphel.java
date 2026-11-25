@@ -2,8 +2,8 @@ package com.devmaster.cult_of_israphel.misc;
 
 import com.devmaster.cult_of_israphel.config.Config;
 
-import com.devmaster.cult_of_israphel.entity.spawns.AdeptPatrolSpawner;
-import com.devmaster.cult_of_israphel.entity.spawns.IsraphelPatrolSpawner;
+import com.devmaster.cult_of_israphel.worldgen.spawns.AdeptPatrolSpawner;
+import com.devmaster.cult_of_israphel.worldgen.spawns.IsraphelPatrolSpawner;
 
 import net.minecraft.world.item.CreativeModeTabs;
 

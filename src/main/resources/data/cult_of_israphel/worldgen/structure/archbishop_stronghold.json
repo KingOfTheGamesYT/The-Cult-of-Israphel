@@ -1,0 +1,7 @@
+{
+  "type": "cult_of_israphel:archbishop_stronghold",
+  "biomes": "minecraft:sunflower_plains",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "beard_thin"
+}

@@ -40,6 +40,8 @@ public class Archbishop extends Monster {
     private int fangCooldown;
     private int strafeTime;
     private float strafeDirection = 1.0F;
+    private static final int DESPAWN_TIME = 12000;
+    private int despawnTimer;
 
     public Archbishop(EntityType<? extends Archbishop> entityType, Level level) {
         super(entityType, level);
@@ -73,6 +75,18 @@ public class Archbishop extends Monster {
 
         if (!this.level().isClientSide) {
             this.initWeapons();
+        }
+        if (this.isPersistenceRequired() || this.hasCustomName()) {
+            return;
+        }
+
+        if (this.level().getNearestPlayer(this, 32.0D) != null) {
+            this.despawnTimer = 0;
+            return;
+        }
+
+        if (++this.despawnTimer >= DESPAWN_TIME) {
+            this.discard();
         }
     }
 
